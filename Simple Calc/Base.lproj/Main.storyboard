@@ -120,6 +120,7 @@
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
+                                    <action selector="calculation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iEA-1T-d0P"/>
                                     <action selector="circleBtn:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="kiF-FG-cN8"/>
                                 </connections>
                             </button>
@@ -140,6 +141,9 @@
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="calculation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TV8-h6-sjd"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aJI-IU-S9X">
                                 <rect key="frame" x="192" y="215" width="80" height="80"/>
@@ -158,6 +162,9 @@
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="factorial:" destination="BYZ-38-t0r" eventType="touchUpInside" id="34q-WZ-19D"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7de-mg-pda">
                                 <rect key="frame" x="280" y="215" width="80" height="80"/>
@@ -391,10 +398,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HeD-xH-5gr">
-                                <rect key="frame" x="192" y="567" width="80" height="80"/>
+                                <rect key="frame" x="192" y="567" width="81" height="80"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.40392156862745099" green="0.40392156862745099" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                 <state key="normal" title="=">
                                     <color key="titleColor" red="0.95526725331160034" green="1" blue="0.96274666404720077" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -454,44 +461,62 @@
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="changeMode:" destination="BYZ-38-t0r" eventType="valueChanged" id="mAD-ta-ASl"/>
+                                </connections>
                             </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MGW-V3-19O">
+                                <rect key="frame" x="286" y="20" width="73" height="73"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.75" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Clear">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <integer key="value" value="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColorFromUIColor">
+                                        <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="clear:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iDm-QF-xTu"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t8Z-bK-aiV">
+                                <rect key="frame" x="16" y="20" width="73" height="73"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.75" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                <state key="normal" title="+/-">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <integer key="value" value="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColorFromUIColor">
+                                        <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="negation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0dk-th-elb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="addBtn" destination="BKd-NI-lJR" id="zdz-e3-UeK"/>
-                        <outlet property="avgBtn" destination="d9O-zP-l32" id="NIh-gl-fWV"/>
-                        <outlet property="countBtn" destination="1q7-NY-O41" id="Xb9-03-Ngv"/>
-                        <outlet property="divideBtn" destination="rKn-rH-TLC" id="JkN-vO-dwz"/>
-                        <outlet property="dotBtn" destination="hWa-Ra-Tjb" id="FUv-rF-iWF"/>
-                        <outlet property="eightBtn" destination="Ujq-gk-46i" id="iak-vM-2KW"/>
+                        <outlet property="clearBtn" destination="MGW-V3-19O" id="hv3-bm-xwx"/>
                         <outlet property="equalBtn" destination="HeD-xH-5gr" id="Hte-cy-KJ6"/>
-                        <outlet property="factBtn" destination="aJI-IU-S9X" id="090-Yr-ehl"/>
-                        <outlet property="fiveBtn" destination="6lb-G3-cpv" id="N59-Az-DHN"/>
-                        <outlet property="fourBtn" destination="ryW-ya-gHz" id="6oz-1X-hb6"/>
-                        <outlet property="modBtn" destination="7de-mg-pda" id="XjL-Ey-8At"/>
                         <outlet property="modeSwitch" destination="YWP-dZ-RoP" id="y63-IF-T3u"/>
-                        <outlet property="multipleBtn" destination="Yfb-Pb-tai" id="Dxt-83-g4M"/>
-                        <outlet property="nineBtn" destination="gQY-ho-xlt" id="z5p-Uo-KBT"/>
-                        <outlet property="oneBtn" destination="kbL-qd-At7" id="elQ-D9-9LG"/>
+                        <outlet property="negationBtn" destination="t8Z-bK-aiV" id="IU3-GE-GpN"/>
                         <outlet property="resultLabel" destination="xcJ-yS-xaW" id="r4i-v6-Lao"/>
-                        <outlet property="sevenBtn" destination="8f2-OL-Eyx" id="6hJ-1n-oy5"/>
-                        <outlet property="sixBtn" destination="h11-7B-prN" id="nax-vp-MpZ"/>
-                        <outlet property="substractBtn" destination="Gie-lE-An5" id="wlH-Og-DAT"/>
-                        <outlet property="threeBtn" destination="Too-Gf-0XF" id="oqW-X9-lel"/>
-                        <outlet property="twoBtn" destination="QVM-ED-xim" id="H7v-kh-Q1b"/>
-                        <outlet property="zeroBtn" destination="b3w-yf-0kd" id="GA3-v2-JX2"/>
-                        <outletCollection property="numBtns" destination="gQY-ho-xlt" collectionClass="NSMutableArray" id="2Zp-Cr-JQQ"/>
-                        <outletCollection property="numBtns" destination="h11-7B-prN" collectionClass="NSMutableArray" id="YWi-1p-JOG"/>
-                        <outletCollection property="numBtns" destination="QVM-ED-xim" collectionClass="NSMutableArray" id="yCJ-Rc-U0B"/>
-                        <outletCollection property="numBtns" destination="b3w-yf-0kd" collectionClass="NSMutableArray" id="3Au-zS-34p"/>
-                        <outletCollection property="numBtns" destination="kbL-qd-At7" collectionClass="NSMutableArray" id="drs-vU-d9x"/>
-                        <outletCollection property="numBtns" destination="6lb-G3-cpv" collectionClass="NSMutableArray" id="CTJ-XP-brg"/>
-                        <outletCollection property="numBtns" destination="Ujq-gk-46i" collectionClass="NSMutableArray" id="ABS-9D-92O"/>
-                        <outletCollection property="numBtns" destination="8f2-OL-Eyx" collectionClass="NSMutableArray" id="hXL-95-WQn"/>
-                        <outletCollection property="numBtns" destination="kbL-qd-At7" collectionClass="NSMutableArray" id="M6K-cQ-x2L"/>
-                        <outletCollection property="numBtns" destination="ryW-ya-gHz" collectionClass="NSMutableArray" id="EY8-ac-Css"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

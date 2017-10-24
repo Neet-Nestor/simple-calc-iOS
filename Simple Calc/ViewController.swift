@@ -10,42 +10,25 @@ import UIKit
 
 class ViewController: UIViewController {
     // Buttons
-    @IBOutlet weak var divideBtn: UIButton!
-    @IBOutlet weak var multipleBtn: UIButton!
-    @IBOutlet weak var substractBtn: UIButton!
-    @IBOutlet weak var addBtn: UIButton!
-    @IBOutlet weak var countBtn: UIButton!
-    @IBOutlet weak var avgBtn: UIButton!
-    @IBOutlet weak var factBtn: UIButton!
-    @IBOutlet weak var modBtn: UIButton!
-    @IBOutlet weak var zeroBtn: UIButton!
-    @IBOutlet weak var oneBtn: UIButton!
-    @IBOutlet weak var twoBtn: UIButton!
-    @IBOutlet weak var threeBtn: UIButton!
-    @IBOutlet weak var fourBtn: UIButton!
-    @IBOutlet weak var fiveBtn: UIButton!
-    @IBOutlet weak var sixBtn: UIButton!
-    @IBOutlet weak var sevenBtn: UIButton!
-    @IBOutlet weak var eightBtn: UIButton!
-    @IBOutlet weak var nineBtn: UIButton!
-    @IBOutlet weak var dotBtn: UIButton!
     @IBOutlet weak var equalBtn: UIButton!
+    @IBOutlet weak var modeSwitch: UISegmentedControl!
+    @IBOutlet weak var negationBtn: UIButton!
+    @IBOutlet weak var clearBtn: UIButton!
 
     // Labels
     @IBOutlet weak var resultLabel: UILabel!
-    @IBOutlet weak var processLabel: UILabel!
-    
-    // Mode Switch
-    @IBOutlet weak var modeSwitch: UISegmentedControl!
-    
-    // Button Collection
-    @IBOutlet var numBtns: [UIButton]!
     
     // Variables
     var preNum:String = ""
-    var nextNum:Bool = true
-    var calculation:String = ""
+    var nextNum:Bool = true // if the next input is a new number
+    var operation:String = ""
     var RPNMode:Int = 0
+    var fullValue:String = "0"
+    var extraOperations:Bool = false
+    var mode:Int = 0    // 0: Transition Mode 1: RPN Mode
+    var numbers = [Double]()
+    var pressAnyOtherKey:Bool = false
+    var pressedNum = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,7 +39,8 @@ class ViewController: UIViewController {
                 btn.layer.cornerRadius = btn.bounds.size.width / 2
             }
         }
-        
+        clearBtn.layer.cornerRadius = 8
+        negationBtn.layer.cornerRadius = 8
     }
 
     override func didReceiveMemoryWarning() {
@@ -66,58 +50,311 @@ class ViewController: UIViewController {
     
     // When number buttons are touched
     @IBAction func onTouchUp(_ button: UIButton) {
-        if ((resultLabel.text == "0" || nextNum)
-            && button.titleLabel?.text! != "・") {
+        pressAnyOtherKey = true
+        pressedNum = true
+        if ((nextNum && button.titleLabel?.text! != "・") ||
+            resultLabel.text! == "Error") {
+            fullValue = button.titleLabel!.text!
             resultLabel.text = button.titleLabel!.text!
             nextNum = false
-        } else if (button.titleLabel?.text! == "・") {
+        } else if (button.titleLabel!.text! == "・") {
             nextNum = false
-            resultLabel.text! += "."
+            fullValue += "."
+            if (fullValue.count > 8) {
+                resultLabel.text = ""
+                for char in fullValue.suffix(8) {
+                    resultLabel.text?.append(char)
+                }
+            } else {
+                resultLabel.text = fullValue
+            }
         } else {
-            resultLabel.text! += button.titleLabel!.text!
+            nextNum = false
+            fullValue += button.titleLabel!.text!
+            if (fullValue.count > 8) {
+                resultLabel.text = ""
+                for char in fullValue.suffix(8) {
+                    resultLabel.text?.append(char)
+                }
+            } else {
+                resultLabel.text = fullValue
+            }
         }
     }
     
     @IBAction func calculation(_ sender: UIButton) {
-        preNum = resultLabel.text!
-        nextNum = true
-        calculation = (sender.titleLabel?.text)!
-    }
-    
-    @IBAction func calcResult(_ sender: UIButton) {
-        let availbleCalculations = ["+", "-", "x", "/", "%"]
-        if (availbleCalculations.contains(calculation)
-            && preNum != "") {
-            switch calculation {
-            case "+":
-                let result = Double(resultLabel.text!)! + Double(preNum)!
-                resultLabel.text = String(result)
-            case "-":
-                let result = Double(resultLabel.text!)! - Double(preNum)!
-                resultLabel.text = String(result)
-            case "x":
-                let result = Double(resultLabel.text!)! * Double(preNum)!
-                resultLabel.text = String(result)
-            case "/":
-                let result = Double(resultLabel.text!)! / Double(preNum)!
-                resultLabel.text = String(result)
-            default:    // case "%"
-                if (isInt(preNum, resultLabel.text!)) {
-                    // if both numbers are integers
-                    let result = Int(preNum)! % Int(resultLabel.text!)!
-                    resultLabel.text = String(result)
-                } else {
+        pressAnyOtherKey = true
+        if (mode == 0) {
+            if (pressedNum) {
+                switch sender.titleLabel!.text! {
+                case "+", "-", "x", "/", "%":
+                    if (!extraOperations) { // if it's not doing extra operations now
+                        if (preNum != "" && operation != "" && fullValue != ""
+                            && pressAnyOtherKey) {
+                            switch operation {
+                            case "+":
+                                resultLabel.text = "\(Double(preNum)! + Double(fullValue)!)"
+                            case "-":
+                                resultLabel.text = "\(Double(preNum)! - Double(fullValue)!)"
+                            case "x":
+                                resultLabel.text = "\(Double(preNum)! * Double(fullValue)!)"
+                            case "/":
+                                resultLabel.text = "\(Double(preNum)! / Double(fullValue)!)"
+                            case "%":
+                                resultLabel.text = "\(Double(preNum)!.truncatingRemainder(dividingBy: Double(resultLabel.text!)!))"
+                            default:
+                                resultLabel.text = "Error"
+                            }
+                            if (equalsInt(Double(resultLabel.text!)!)) {
+                                fullValue = String(Int(Double(resultLabel.text!)!))
+                                resultLabel.text = String(Int(Double(resultLabel.text!)!))
+                            } else {
+                                fullValue = String(Double(resultLabel.text!)!)
+                                resultLabel.text = fullValue
+                            }
+                        }
+                        preNum = fullValue
+                        nextNum = true
+                        operation = sender.titleLabel!.text!
+                    }
+                case "Count", "Avg", "Fact":
+                    extraOperations = true
+                    if (operation == "" || operation == sender.titleLabel!.text!) {
+                        numbers.append(Double(fullValue)!)
+                        operation = sender.titleLabel!.text!
+                        nextNum = true
+                    } else {
+                        resultLabel.text = "Error"
+                    }
+                default:
                     resultLabel.text = "Error"
                 }
             }
+        } else {    // mode == 1
+            numbers.append(Double(fullValue)!)
+            
+            switch sender.titleLabel!.text! {
+            case "+":
+                var sum = 0.0
+                if (numbers.count > 1) {
+                    for num in numbers {
+                        sum += num
+                    }
+                }
+                if (equalsInt(sum)) {
+                    resultLabel.text = "\(Int(Double(sum)))"
+                } else {
+                    resultLabel.text = "\(Double(sum))"
+                }
+            case "-":
+                var sum = numbers[0]
+                if (numbers.count > 1) {
+                    for index in 1...(numbers.count - 1) {
+                        sum -= numbers[index]
+                    }
+                }
+                if (equalsInt(sum)) {
+                    resultLabel.text = "\(Int(Double(sum)))"
+                } else {
+                    resultLabel.text = "\(Double(sum))"
+                }
+            case "x":
+                var result = 1.0
+                if (numbers.count > 1) {
+                    for num in numbers {
+                        result *= num
+                    }
+                }
+                if (equalsInt(result)) {
+                    resultLabel.text = "\(Int(Double(result)))"
+                } else {
+                    resultLabel.text = "\(Double(result))"
+                }
+            case "/":
+                var result = numbers[0]
+                if (numbers.count > 1) {
+                    for index in 1...(numbers.count - 1) {
+                        result /= numbers[index]
+                    }
+                }
+                if (equalsInt(result)) {
+                    resultLabel.text = "\(Int(Double(result)))"
+                } else {
+                    resultLabel.text = "\(Double(result))"
+                }
+            case "%":
+                var result = numbers[0]
+                if (numbers.count > 1) {
+                    for index in 1...(numbers.count - 1) {
+                        result = result.truncatingRemainder(dividingBy: numbers[index])
+                    }
+                }
+                if (equalsInt(result)) {
+                    resultLabel.text = "\(Int(result))"
+                } else {
+                    resultLabel.text = "\(result)"
+                }
+            case "Count":
+                NSLog("\(numbers)")
+                resultLabel.text = "\(numbers.count)"
+            case "Avg":
+                var sum = 0.0
+                for num in numbers {
+                    sum += num
+                }
+                let result = sum / Double(numbers.count)
+                if (equalsInt(result)) {
+                    resultLabel.text = "\(Int(result))"
+                } else {
+                    resultLabel.text = "\(result)"
+                }
+            default:
+                resultLabel.text = "Error"
+            }
+            numbers.removeAll()
+            nextNum = true
         }
-        preNum = ""
+        pressedNum = false
+    }
+    
+    @IBAction func calcResult(_ sender: UIButton) {
+        NSLog("\(preNum) \(operation) \(fullValue)")
+        if (mode == 0 && (operation == "") ||
+            (["+", "-", "*", "/", "%"].contains(operation) && preNum == "")) {
+            resultLabel.text = fullValue
+        } else if (mode == 0) {
+            let normalCalculations = ["+", "-", "x", "/", "%"]
+            if (normalCalculations.contains(operation)
+                && preNum != "") {
+                switch operation {
+                case "+":
+                    resultLabel.text = "\(Double(preNum)! + Double(fullValue)!)"
+                case "-":
+                    resultLabel.text = "\(Double(preNum)! - Double(fullValue)!)"
+                case "x":
+                    resultLabel.text = "\(Double(preNum)! * Double(fullValue)!)"
+                case "/":
+                    resultLabel.text = "\(Double(preNum)! / Double(fullValue)!)"
+                case "%":
+                    resultLabel.text = "\(Double(preNum)!.truncatingRemainder(dividingBy: Double(resultLabel.text!)!))"
+                default:
+                    resultLabel.text = "Error"
+                }
+                if (pressAnyOtherKey) {
+                    preNum = fullValue
+                }
+                if (equalsInt(Double(resultLabel.text!)!)) {
+                    fullValue = String(Int(Double(resultLabel.text!)!))
+                    resultLabel.text = String(Int(Double(resultLabel.text!)!))
+                } else {
+                    fullValue = String(Double(resultLabel.text!)!)
+                    resultLabel.text = fullValue
+                }
+                preNum = ""
+            } else {    // extra operators
+                if (pressedNum) {
+                    numbers.append(Double(fullValue)!)
+                }
+                switch operation {
+                case "Count":
+                    resultLabel.text = "\(numbers.count)"
+                case "Avg":
+                    var sum:Double = 0.0
+                    for num in numbers {
+                        sum += num
+                    }
+                    let result:Double = sum / Double(numbers.count)
+                    if (equalsInt(result)) {
+                        resultLabel.text = "\(Int(result))"
+                    } else {
+                        resultLabel.text = "\(result)"
+                    }
+                default:
+                    resultLabel.text = "Error"
+                }
+                numbers.removeAll()
+                operation = ""
+            }
+            pressAnyOtherKey = false
+        } else if (sender.titleLabel!.text == "->") {    // mode == 1
+            numbers.append(Double(fullValue)!)
+        }
+        nextNum = true
+        pressedNum = false
+        extraOperations = false
+    }
+    
+    @IBAction func clear(_ sender: UIButton) {
+        pressAnyOtherKey = true
+        resultLabel.text = "0"
+        fullValue = "0"
+        operation = ""
+        numbers.removeAll()
         nextNum = true
     }
     
-    func isInt(_ num1:String, _ num2:String) -> Bool {
-        return Int(num1) == Int(Double(num1)!)
-            && Int(num2) == Int(Double(num2)!)
+    @IBAction func factorial(_ sender: UIButton) {
+        pressAnyOtherKey = true
+        if (isPositiveInt(fullValue)) {
+            var result:Int = 1;
+            for multiple in 2...Int(fullValue)! {
+                result *= multiple
+            }
+            resultLabel.text = "\(result)"
+            nextNum = true
+        } else {
+            resultLabel.text = "Error"
+        }
+    }
+    
+    @IBAction func changeMode(_ sender: UISegmentedControl) {
+        mode = sender.selectedSegmentIndex
+        NSLog(String(mode))
+        resultLabel.text = "0"
+        numbers.removeAll()
+        preNum = ""
+        fullValue = "0"
+        operation = ""
+        nextNum = true
+        if (mode == 1) {
+            equalBtn.setTitle("->", for: .normal)
+        } else {
+            equalBtn.setTitle("=", for: .normal)
+        }
+    }
+    
+    @IBAction func negation(_ sender: UIButton) {
+        NSLog("\(resultLabel.text!)")
+        NSLog("\(fullValue)")
+        if (isNum(fullValue) && isNum(resultLabel.text!)) {
+            NSLog("\(Double(resultLabel.text!)!)")
+            NSLog("\(fullValue)")
+            NSLog("\(resultLabel.text!)")
+            let temp = -1.0 * Double(resultLabel.text!)!
+            fullValue = "\(-1 * Double(fullValue)!)"
+            if (equalsInt(temp)) {
+                resultLabel.text = "\(Int(temp))"
+            } else {
+                resultLabel.text = "\(temp)"
+            }
+        }
+    }
+    
+    
+    func isInt(_ str:String) -> Bool {
+        return str.range(of: "^-?[0-9]+$", options: .regularExpression) != nil
+    }
+    
+    func isNum(_ str:String) -> Bool {
+        return str.range(of: "^-?[0-9]+([\\.][0-9]+)?$", options: .regularExpression) != nil
+    }
+    
+    func isPositiveInt(_ str:String) -> Bool {
+        return str.range(of: "^[1-9]+[[0-9]+]?$", options: .regularExpression) != nil
+    }
+    
+    func equalsInt(_ num:Double) -> Bool {
+        return Double(Int(num)) == num
     }
 }
 
